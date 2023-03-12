@@ -21,7 +21,7 @@ export class TaskResolver {
   }
 
   @Query(() => [Task], { name: 'tasks' })
-  findMany(@Args() args: FindManyTaskArgs) {
+  findMany(@Args() args: FindManyTaskArgs): Promise<Task[]> {
     return this.taskService.findMany(args);
   }
 

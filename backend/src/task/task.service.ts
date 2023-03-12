@@ -16,7 +16,7 @@ export class TaskService {
   }
 
   findMany(args: FindManyTaskArgs) {
-    return this.prisma.findManyPaginated(this.prisma.task, args);
+    return this.prisma.task.findMany(args);
   }
 
   create(args: CreateTaskArgs) {
