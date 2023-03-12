@@ -1,23 +1,18 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = [env("PRISMA_BINARY_TARGET")]
+  binaryTargets = "native"
   // previewFeatures = ["filteredRelationCount", "clientExtensions"]
 }
 
-// generator nestgraphql {
-//   provider                        = "node node_modules/prisma-nestjs-graphql"
-//   output                          = "../src/prisma/@generated"
-//   reExport                        = "All"
-//   fields_Scalars_from             = "graphql-scalars"
-//   fields_Scalars_input            = true
-//   fields_Scalars_output           = true
-//   fields_Validator_from           = "class-validator"
-//   fields_Validator_input          = true
-//   graphqlScalars_BigInt_name      = "GraphQLBigInt"
-//   graphqlScalars_BigInt_specifier = "graphql-scalars"
-//   graphqlScalars_Json_name        = "GraphQLJSON"
-//   graphqlScalars_Json_specifier   = "graphql-scalars"
-// }
+generator nestgraphql {
+  provider               = "node node_modules/prisma-nestjs-graphql"
+  output                 = "../src/prisma/@generated"
+  reExport               = "All"
+  fields_Scalars_input   = true
+  fields_Scalars_output  = true
+  fields_Validator_from  = "class-validator"
+  fields_Validator_input = true
+}
 
 datasource db {
   provider = "mongodb"
