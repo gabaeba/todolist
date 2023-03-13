@@ -54,12 +54,18 @@ export type DateTimeNullableFilter = {
 export type Mutation = {
   __typename?: 'Mutation';
   createTask: Task;
+  deleteTask: Task;
   updateTask: Task;
 };
 
 
 export type MutationCreateTaskArgs = {
   data: TaskCreateInput;
+};
+
+
+export type MutationDeleteTaskArgs = {
+  where: TaskWhereUniqueInput;
 };
 
 
@@ -388,6 +394,7 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createTask?: Resolver<ResolversTypes['Task'], ParentType, ContextType, RequireFields<MutationCreateTaskArgs, 'data'>>;
+  deleteTask?: Resolver<ResolversTypes['Task'], ParentType, ContextType, RequireFields<MutationDeleteTaskArgs, 'where'>>;
   updateTask?: Resolver<ResolversTypes['Task'], ParentType, ContextType, RequireFields<MutationUpdateTaskArgs, 'data' | 'where'>>;
 };
 

@@ -7,6 +7,7 @@ import {
   Task,
   UpdateTaskArgs,
 } from './dto';
+import { DeleteTaskArgs } from './dto/args/delete-one.args';
 import { TaskService } from './task.service';
 
 @Resolver(() => Task)
@@ -33,5 +34,10 @@ export class TaskResolver {
   @Mutation(() => Task)
   updateTask(@Args() args: UpdateTaskArgs) {
     return this.taskService.update(args);
+  }
+
+  @Mutation(() => Task)
+  deleteTask(@Args() args: DeleteTaskArgs) {
+    return this.taskService.delete(args);
   }
 }

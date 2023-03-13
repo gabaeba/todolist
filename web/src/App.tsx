@@ -1,37 +1,128 @@
-import { useState } from 'react'
-import { useGetTaskQuery } from './pages/task/graphql/__generated__/list.gql.generated'
+import { Button, Checkbox, Col, Form, Input, Radio, Row, Typography } from 'antd'
+import { useForm } from 'antd/lib/form/Form'
+import { useMemo, useState } from 'react';
+import { useCreateTaskMutation } from './pages/task/graphql/__generated__/create.gql.generated';
+import { useDeleteTaskMutation } from './pages/task/graphql/__generated__/delete.gql.generated';
+import { GetTaskDocument, useGetTaskQuery } from './pages/task/graphql/__generated__/list.gql.generated'
+import { useUpdateTaskMutation } from './pages/task/graphql/__generated__/update.gql.generated';
 
 function App(): JSX.Element {
+  const [form] = useForm();
+  const { data, loading } = useGetTaskQuery({
+    fetchPolicy: 'cache-and-network'
+  })
+  const [values, setValues] = useState()
+  const [createTask] = useCreateTaskMutation({
+    refetchQueries: [GetTaskDocument]
+  })
+  const [updateTask] = useUpdateTaskMutation({
+    refetchQueries: [GetTaskDocument]
+  })
+  const [deleteTask] = useDeleteTaskMutation({
+    refetchQueries: [GetTaskDocument]
+  })
 
-  const {data, loading} = useGetTaskQuery({})
+  const onFinish = async () => {
+    await createTask({ variables: { data: { description: form.getFieldValue('description') } } })
+  }
 
-  if(loading) return <p>Loading...</p>
+  const content = useMemo(() => {
+    return (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Typography.Title level={3} style={{ textAlign: 'center', paddingBottom: '20px' }}>
+        Lista de tarefas
+      </Typography.Title>
+      <Row gutter={[16, 16]} align='middle'>
+        <Col>
+          <Form.Item name={'description'} label={"Descrição"} rules={[{ required: true, message: 'Descrição obrigatória' }]}>
+            <Input />
+          </Form.Item>
+        </Col>
+        <Col>
+          <Button
+            type="primary"
+            onClick={() => {
+              form.submit();
+            }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            +
+          </Button>
+        </Col>
+      </Row>
+      <Form.List name="createTasks">
+        {(fields, { add, remove }) => (
+          <>
+            <div>
+              {fields.map(({ key, name }) => (
+                <Row key={name} gutter={[16, 16]} align='bottom'>
+                  <Col>
+                    <Form.Item name={[name, 'id']} hidden>
+                      <Input hidden />
+                    </Form.Item>
+                  </Col>
+                  <Col>
+                    <Form.Item name={[name, 'isCompleted']} valuePropName="checked">
+                      <Checkbox onChange={async (event) => {
+                        const { checked } = event?.target
+                        await updateTask({
+                          variables: { data: { isCompleted: { set: checked } }, where: { id: form.getFieldValue(['createTasks', name, 'id']) } }
+                        })
 
+                      }} />
+                    </Form.Item>
+                  </Col>
+                  <Col>
+                    <Form.Item name={[name, 'description']}>
+                      <Input bordered={false} readOnly style={form.getFieldValue(['createTasks', name, 'isCompleted']) ? { textDecoration: "line-through" } : {}} />
+                    </Form.Item>
+                  </Col>
+                  <Col>
+                    <Form.Item>
+                      <Button
+                        danger
+                        size='small'
+                        onClick={async () => {
+                          await deleteTask({ variables: { where: { id: form.getFieldValue(['createTasks', name, 'id']) } } })
+                        }}
+                      >
+                        x
+                      </Button>
+                    </Form.Item>
+                  </Col>
+                </Row>
+              ))}
+            </div>
+          </>
+        )}
+      </Form.List>
+    </div >)
+  }, [data, loading])
+
+  if (loading) return <p>Loading...</p>
   return (
-    <>
-    {data?.tasks?.map(list => {
-      return (
-        <div key={list.id}>
-          <p>
-            Id: {list.id}
-          </p>
-          <p>
-            Description: {list.description}
-          </p>
-          <p>
-            Completed: {list.isCompleted.toString()}
-          </p>
-          <p>
-            Created: {list.createdAt}
-          </p>
-          <p>
-            Updated: {list.updatedAt}
-          </p>
-        </div>
-      )
-    })}
-    </>
-  ) 
+    <Form
+      style={{ paddingTop: '20px' }}
+      layout="vertical"
+      onFinish={onFinish}
+      form={form}
+      initialValues={{
+        createTasks: data?.tasks.map((task) => {
+          return {
+            id: task.id,
+            description: task.description,
+            isCompleted: task.isCompleted
+          }
+        })
+      }}
+      onValuesChange={(changedValues, allValues) => {
+        setValues(allValues)
+      }}>
+      {content}
+    </Form >
+  )
 }
 
 export default App

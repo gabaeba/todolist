@@ -6,6 +6,7 @@ import {
   FindUniqueTaskArgs,
   UpdateTaskArgs,
 } from './dto';
+import { DeleteTaskArgs } from './dto/args/delete-one.args';
 
 @Injectable()
 export class TaskService {
@@ -34,6 +35,12 @@ export class TaskService {
       data: {
         ...args.data,
       },
+    });
+  }
+
+  delete(args: DeleteTaskArgs) {
+    return this.prisma.task.delete({
+      ...args,
     });
   }
 }
