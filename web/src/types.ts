@@ -123,7 +123,7 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
 
 export type Query = {
   __typename?: 'Query';
-  task?: Maybe<Task>;
+  task: Task;
   tasks: Array<Task>;
 };
 
@@ -399,7 +399,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  task?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<QueryTaskArgs, 'where'>>;
+  task?: Resolver<ResolversTypes['Task'], ParentType, ContextType, RequireFields<QueryTaskArgs, 'where'>>;
   tasks?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType, Partial<QueryTasksArgs>>;
 };
 

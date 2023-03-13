@@ -1,6 +1,6 @@
 import { Button, Checkbox, Col, Form, Input, Radio, Row, Typography } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCreateTaskMutation } from './pages/task/graphql/__generated__/create.gql.generated';
 import { useDeleteTaskMutation } from './pages/task/graphql/__generated__/delete.gql.generated';
 import { GetTaskDocument, useGetTaskQuery } from './pages/task/graphql/__generated__/list.gql.generated'
@@ -39,6 +39,7 @@ function App(): JSX.Element {
         }
       })
     })
+    form.resetFields()
   }, [data, loading, loadingCreate, loadingUpdate, loadingDelete])
 
   if (loading || loadingCreate || loadingUpdate || loadingDelete) return <p>Loading...</p>

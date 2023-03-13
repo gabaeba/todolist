@@ -14,7 +14,7 @@ import { TaskService } from './task.service';
 export class TaskResolver {
   constructor(private readonly taskService: TaskService) {}
 
-  @Query(() => Task, { name: 'task', nullable: true })
+  @Query(() => Task, { name: 'task' })
   async findUnique(@Args() args: FindUniqueTaskArgs) {
     const task = await this.taskService.findUnique(args);
     if (!task) throw new NotFoundException('task Not Found.');
